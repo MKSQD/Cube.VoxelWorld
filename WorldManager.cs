@@ -23,6 +23,8 @@ namespace Core.Voxelworld
         Dictionary<IntVector3, ChunkManagerRequest> _loadingChunks = new Dictionary<IntVector3, ChunkManagerRequest>();
         Dictionary<IntVector3, float> _positionAgeMap = new Dictionary<IntVector3, float>();
 
+        public List<IWorldManagerListener> listeners = new List<IWorldManagerListener>();
+
         void Awake()
         {
             _chunkManager = GetComponent<ChunkManager>();
@@ -30,7 +32,11 @@ namespace Core.Voxelworld
 
         void Start()
         {
-            ConnectionManager.instance.LoadConnections();
+            foreach (var listener in listeners) {
+                listener.Initialize();
+            }
+
+            //ConnectionManager.instance.LoadConnections();
         }
 
         void OnApplicationQuit()
@@ -44,7 +50,10 @@ namespace Core.Voxelworld
             }
             {
                 Debug.Log("Saving connections...");
-                ConnectionManager.instance.SerializeConnections();
+                foreach (var listener in listeners) {
+                    listener.Shutdown();
+                }
+                // ConnectionManager.instance.SerializeConnections();
                 Debug.Log("Saving connections done");
             }
         }
@@ -57,7 +66,7 @@ namespace Core.Voxelworld
             //UnloadOldChunks();
         }
 
-        public FunctionalBlock GetFunctionalBlockAtWorldPosition(Vector3 worldPosition)
+        public IFunctionalBlock GetFunctionalBlockAtWorldPosition(Vector3 worldPosition)
         {
             var chunkPosition = WorldToChunkPosition(worldPosition);
 
@@ -70,7 +79,7 @@ namespace Core.Voxelworld
             if (!chunk.functionalBlocks.TryGetValue(blockLocalPosition, out functionalBlock))
                 return null;
 
-            return functionalBlock.GetComponent<FunctionalBlock>();
+            return functionalBlock.GetComponent<IFunctionalBlock>();
         }
 
         public Voxel GetVoxelAtWorldPosition(Vector3 worldPosition)
@@ -87,7 +96,10 @@ namespace Core.Voxelworld
 
         public Voxel PlaceVoxelAtWorldPosition(Vector3 worldPosition, Voxel voxel)
         {
-            ConnectionManager.instance.RemovedConnectionsFromAndTo(new IntVector3(worldPosition));
+            foreach (var listener in listeners) {
+                listener.VoxelChanged(worldPosition, voxel);
+            }
+            //ConnectionManager.instance.RemovedConnectionsFromAndTo(new IntVector3(worldPosition));
 
             var chunkPosition = WorldToChunkPosition(worldPosition);
 
