@@ -35,8 +35,6 @@ namespace Core.Voxelworld
             foreach (var listener in listeners) {
                 listener.Initialize();
             }
-
-            //ConnectionManager.instance.LoadConnections();
         }
 
         void OnApplicationQuit()
@@ -101,7 +99,6 @@ namespace Core.Voxelworld
             foreach (var listener in listeners) {
                 listener.VoxelChanged(worldPositionInt, voxel);
             }
-            //ConnectionManager.instance.RemovedConnectionsFromAndTo(new IntVector3(worldPosition));
 
             var chunkPosition = WorldToChunkPosition(worldPosition);
 

@@ -10,12 +10,13 @@ namespace Core.Voxelworld
         public string name;
         public bool isNotMergable;
         public bool isTransparent;
-        public GameObject prefab;
+        public string prefabPath;
     }
 
     [CreateAssetMenu]
     public class VoxelTypesDefinition : ScriptableObject
     {
+        public string prefabBasePath;
         public List<VoxelTypeDefinition> types;
     }
 }
