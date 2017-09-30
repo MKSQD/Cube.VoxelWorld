@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core.Voxelworld
 {
@@ -8,6 +6,6 @@ namespace Core.Voxelworld
     {
         void Initialize();
         void Shutdown();
-        void VoxelChanged(Vector3 worldPosition, Voxel voxel);
+        void VoxelChanged(IntVector3 worldPosition, Voxel voxel);
     }
 }
