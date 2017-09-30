@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 namespace Core.Voxelworld
 {
+    [RequireComponent(typeof(ChunkManager))]
     public class WorldManager : MonoBehaviourSingleton<WorldManager>
     {
         public Mesh[] StorageMeshes; // #todo move me to Storage

@@ -57,6 +57,9 @@ namespace Core.Voxelworld
             catch (FileNotFoundException) {
                 return false;
             }
+            catch (DirectoryNotFoundException) {
+                return false;
+            }
         }
 
         public void Save(IntVector3 pos, Chunk chunk)
@@ -98,7 +101,12 @@ namespace Core.Voxelworld
                 }
             }
 
-            File.WriteAllBytes(GetFilePathForChunkPosition(pos), memoryStream.ToArray());
+            try {
+                File.WriteAllBytes(GetFilePathForChunkPosition(pos), memoryStream.ToArray());
+            }
+            catch (DirectoryNotFoundException e) {
+                Debug.LogError("/Save directory not found (" + e + ")");
+            }
         }
 
         string GetFilePathForChunkPosition(IntVector3 pos)
