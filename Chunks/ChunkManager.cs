@@ -75,7 +75,7 @@ namespace Core.Voxelworld
 
             // Functional blocks
             foreach (var functionalBlock in chunk.functionalBlocks.Values) {
-                var interface_ = functionalBlock.GetComponent<FunctionalBlock>();
+                var interface_ = functionalBlock.GetComponent<IFunctionalBlock>();
                 if (interface_ != null) {
                     interface_.ChunkChanged();
                 }
