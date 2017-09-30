@@ -88,7 +88,7 @@ namespace Core.Voxelworld
                     for (int z = 0; z < WorldManager.chunkSize; ++z) {
                         var voxel = chunk.voxelData.Get(x, y, z);
 
-                        var prefab = Voxel.GetFunctionalBlockPrefabForType(voxel.type);
+                        var prefab = VoxelTypes.GetFunctionalBlockPrefabForType(voxel.type);
                         if (prefab != null) {
                             var pos = new IntVector3(x, y, z);
                             aliveFunctionalBlockPositions.Add(pos);
