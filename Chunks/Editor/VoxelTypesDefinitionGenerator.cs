@@ -96,13 +96,16 @@ namespace Core.Voxelworld
             builder.Append("    {\r\n");
             builder.Append("        switch (type) {\r\n");
             if (voxelTypesDefinition.types != null) {
-                var basePath = voxelTypesDefinition.prefabBasePath;
-                if (!basePath.EndsWith("/")) {
-                    basePath += "/";
+                var basePath = "";
+                if (voxelTypesDefinition.prefabBasePath != null) {
+                    basePath = voxelTypesDefinition.prefabBasePath;
+                    if (!basePath.EndsWith("/")) {
+                        basePath += "/";
+                    }
                 }
 
                 foreach (var type in voxelTypesDefinition.types) {
-                    if (type.prefabPath.Length == 0)
+                    if (type.prefabPath == null || type.prefabPath.Length == 0)
                         continue;
 
                     builder.Append("           case VoxelType." + type.name + ": return (GameObject)Resources.Load(\"" + basePath + type.prefabPath + "\", typeof(GameObject));\r\n");
