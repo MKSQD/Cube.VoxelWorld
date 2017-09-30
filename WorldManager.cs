@@ -96,8 +96,10 @@ namespace Core.Voxelworld
 
         public Voxel PlaceVoxelAtWorldPosition(Vector3 worldPosition, Voxel voxel)
         {
+            var worldPositionInt = new IntVector3(worldPosition);
+
             foreach (var listener in listeners) {
-                listener.VoxelChanged(worldPosition, voxel);
+                listener.VoxelChanged(worldPositionInt, voxel);
             }
             //ConnectionManager.instance.RemovedConnectionsFromAndTo(new IntVector3(worldPosition));
 
