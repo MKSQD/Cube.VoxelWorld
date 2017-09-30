@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IFunctionalBlock
+namespace Core.Voxelworld
 {
-    void ChunkChanged();
+    public interface IFunctionalBlock
+    {
+        void ChunkChanged();
+    }
 }

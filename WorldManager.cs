@@ -66,7 +66,7 @@ namespace Core.Voxelworld
             //UnloadOldChunks();
         }
 
-        public IFunctionalBlock GetFunctionalBlockAtWorldPosition(Vector3 worldPosition)
+        public GameObject GetFunctionalBlockAtWorldPosition(Vector3 worldPosition)
         {
             var chunkPosition = WorldToChunkPosition(worldPosition);
 
@@ -79,7 +79,7 @@ namespace Core.Voxelworld
             if (!chunk.functionalBlocks.TryGetValue(blockLocalPosition, out functionalBlock))
                 return null;
 
-            return functionalBlock.GetComponent<IFunctionalBlock>();
+            return functionalBlock;
         }
 
         public Voxel GetVoxelAtWorldPosition(Vector3 worldPosition)
