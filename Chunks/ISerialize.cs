@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.IO;
 
-interface ISerializable {
-    void Serialize(BinaryWriter writer);
-    void Deserialize(BinaryReader reader);
+namespace Core.Voxelworld
+{
+    interface ISerializable
+    {
+        void Serialize(BinaryWriter writer);
+        void Deserialize(BinaryReader reader);
+    }
 }
