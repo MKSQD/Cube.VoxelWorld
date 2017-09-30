@@ -56,13 +56,13 @@ namespace Core.Voxelworld
                         for (j = 0; j < WorldManager.chunkSize; ++j) {
                             for (i = 0; i < WorldManager.chunkSize;) {
                                 var maskVoxelType = mask[n];
-                                if (Voxel.IsTypeTransparent(maskVoxelType)) {
+                                if (VoxelTypes.IsTransparent(maskVoxelType)) {
                                     ++i;
                                     ++n;
                                     continue;
                                 }
 
-                                if (Voxel.IsTypeMergable(maskVoxelType)) {
+                                if (VoxelTypes.IsMergable(maskVoxelType)) {
                                     // Compute width
                                     for (w = 1; i + w < WorldManager.chunkSize && mask[n + w] == maskVoxelType; ++w)
                                         ;
