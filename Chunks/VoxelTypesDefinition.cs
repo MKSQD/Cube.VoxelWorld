@@ -8,6 +8,7 @@ namespace Core.Voxelworld
     public struct VoxelTypeDefinition
     {
         public string name;
+        public string displayName;
         public bool isNotMergable;
         public bool isTransparent;
         public string prefabPath;

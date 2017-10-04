@@ -92,6 +92,22 @@ namespace Core.Voxelworld
             builder.Append("        }\r\n");
             builder.Append("    }\r\n");
 
+            builder.Append("    public static string GetDisplayName(VoxelType type)\r\n");
+            builder.Append("    {\r\n");
+            builder.Append("        switch (type) {\r\n");
+            if (voxelTypesDefinition.types != null) {
+                foreach (var type in voxelTypesDefinition.types) {
+                    var displayName = type.displayName;
+                    if (displayName == null || displayName.Length == 0)
+                        displayName = type.name;
+
+                    builder.Append("           case VoxelType." + type.name + ": return \"" + displayName + "\";\r\n");
+                }
+            }
+            builder.Append("            default: return \"Unknown\";\r\n");
+            builder.Append("        }\r\n");
+            builder.Append("    }\r\n");
+
             builder.Append("    public static GameObject GetFunctionalBlockPrefabForType(VoxelType type)\r\n");
             builder.Append("    {\r\n");
             builder.Append("        switch (type) {\r\n");
