@@ -14,12 +14,13 @@ namespace Core.Voxelworld
         {
             Directory.CreateDirectory(Application.dataPath + "/Generated/Core/Voxelworld");
 
-            var voxelTypesDefinitions = AssetUtils.FindResourcePathsByType<VoxelTypesDefinition>();
-            if (voxelTypesDefinitions.Length != 1) {
+            
+            var voxelTypesDefinitionGuids = AssetDatabase.FindAssets("t:VoxelTypesDefinition");
+            if (voxelTypesDefinitionGuids.Length != 1) {
                 Debug.LogError("None or multiple definition files found");
                 return;
             }
-            var assetPath = "Assets/Resources/" + voxelTypesDefinitions[0];
+            var assetPath = AssetDatabase.GUIDToAssetPath(voxelTypesDefinitionGuids[0]);
             var voxelTypesDefinition = AssetDatabase.LoadAssetAtPath<VoxelTypesDefinition>(assetPath);
             if (voxelTypesDefinition == null) {
                 Debug.LogError("Failed to load VoxelTypesDefinition at '" + assetPath + "'");
