@@ -16,7 +16,7 @@ namespace Cube.Voxelworld {
             var result = new ChunkMesherResult();
 
             for (bool backFace = true, b = false; b != backFace; backFace = backFace && b, b = !b) {
-                for (int dimension = 0; dimension < 3; dimension++) {
+                for (int dimension = 0; dimension < 3; ++dimension) {
                     int i, j, k, l, w, h;
                     int u = (dimension + 1) % 3;
                     int v = (dimension + 2) % 3;
@@ -41,8 +41,7 @@ namespace Cube.Voxelworld {
                                 }
                             }
                         }
-
-                        // Increment x[d]
+                        
                         ++x[dimension];
 
                         // Generate mesh for mask using lexicographic ordering
@@ -50,13 +49,14 @@ namespace Cube.Voxelworld {
                         for (j = 0; j < VoxelworldSystem.chunkSize; ++j) {
                             for (i = 0; i < VoxelworldSystem.chunkSize;) {
                                 var maskVoxelType = mask[n];
-                                if (VoxelTypes.IsTransparent(maskVoxelType)) {
+                                if (maskVoxelType == VoxelType.None) {
                                     ++i;
                                     ++n;
                                     continue;
                                 }
 
-                                if (VoxelTypes.IsMergable(maskVoxelType)) {
+                                var isVoxelTypeMergable = true; // maskVoxelType
+                                if (isVoxelTypeMergable) {
                                     // Compute width
                                     for (w = 1; i + w < VoxelworldSystem.chunkSize && mask[n + w] == maskVoxelType; ++w)
                                         ;
@@ -85,7 +85,7 @@ namespace Cube.Voxelworld {
                                 var dv = new int[3];
                                 du[u] = w;
                                 dv[v] = h;
-                                Vector3 normal = Vector3.zero;
+                                var normal = Vector3.zero;
 
                                 if (!backFace) {
                                     switch (dimension) {
@@ -94,7 +94,7 @@ namespace Cube.Voxelworld {
                                         case 2: normal = Vector3.forward; break;
                                     }
 
-                                    result.BuildTriangle(
+                                    result.AddQuad(
                                         new Vector3(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2]),
                                         new Vector3(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2]),
                                         new Vector3(x[0] + du[0], x[1] + du[1], x[2] + du[2]),
@@ -108,7 +108,7 @@ namespace Cube.Voxelworld {
                                         case 2: normal = Vector3.back; break;
                                     }
 
-                                    result.BuildTriangle(
+                                    result.AddQuad(
                                        new Vector3(x[0], x[1], x[2]),
                                         new Vector3(x[0] + du[0], x[1] + du[1], x[2] + du[2]),
                                         new Vector3(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2]),
