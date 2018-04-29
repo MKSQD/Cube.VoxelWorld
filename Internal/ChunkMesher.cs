@@ -31,10 +31,11 @@ namespace Cube.Voxelworld {
                         int n = 0;
                         for (x[v] = 0; x[v] < VoxelworldSystem.chunkSize; ++x[v]) {
                             for (x[u] = 0; x[u] < VoxelworldSystem.chunkSize; ++x[u]) {
-                                VoxelType v1 = x[dimension] >= 0 ? voxelData.Get(x[0], x[1], x[2]).type : VoxelType.None;
-                                VoxelType v2 = (x[dimension] < VoxelworldSystem.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : VoxelType.None;
+                                var v1 = x[dimension] >= 0 ? voxelData.Get(x[0], x[1], x[2]).type : VoxelType.None;
+                                var v2 = (x[dimension] < VoxelworldSystem.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : VoxelType.None;
 
-                                if (v1 == v2) {
+                                var faceNotVisible = v1 != VoxelType.None && v2 != VoxelType.None;
+                                if (v1 == v2 || faceNotVisible) {
                                     mask[n++] = VoxelType.None;
                                 } else {
                                     mask[n++] = backFace ? v2 : v1;
