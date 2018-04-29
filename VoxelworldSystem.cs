@@ -194,7 +194,10 @@ namespace Cube.Voxelworld {
 
                 var chunk = _chunkProvider.GetResult(request);
 
-                var meshRenderer = chunk.gameObject.GetComponent<MeshRenderer>();
+                var chunkGO = chunk.gameObject;
+                chunkGO.transform.parent = transform;
+
+                var meshRenderer = chunkGO.GetComponent<MeshRenderer>();
                 meshRenderer.material = chunkMaterial;
 
                 loaded.Add(pair.Key);
