@@ -43,7 +43,7 @@ namespace Cube.Voxelworld {
             return chunk.voxelData.Get(blockPosition.x, blockPosition.y, blockPosition.z);
         }
 
-        public Voxel PlaceVoxelAtWorldPosition(Vector3 worldPosition, Voxel voxel) {
+        public Voxel SetVoxelAtWorldPosition(Vector3 worldPosition, Voxel voxel) {
             var chunkPosition = WorldToChunkPosition(worldPosition);
 
             Chunk chunk;
