@@ -2,18 +2,14 @@
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Core.Voxelworld
-{
-    public sealed class ThreadPool : IDisposable
-    {
-        struct Task
-        {
+namespace Cube.Voxelworld {
+    public sealed class ThreadPool : IDisposable {
+        struct Task {
             public Action action;
             public int priority;
         }
 
-        public ThreadPool()
-        {
+        public ThreadPool() {
             int size = Math.Max(Environment.ProcessorCount - 1, 1);
 
             _workers = new LinkedList<Thread>();
@@ -26,8 +22,7 @@ namespace Core.Voxelworld
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             var waitForThreads = false;
             lock (_tasks) {
                 if (!_disposed) {
@@ -50,8 +45,7 @@ namespace Core.Voxelworld
             }
         }
 
-        public void QueueTask(Action action, int priority)
-        {
+        public void QueueTask(Action action, int priority) {
             lock (this._tasks) {
                 if (_disallowAdd)
                     throw new InvalidOperationException("This Pool instance is in the process of being disposed, can't add anymore");
@@ -73,8 +67,7 @@ namespace Core.Voxelworld
 
                 if (node != null) {
                     _tasks.AddBefore(node, task);
-                }
-                else {
+                } else {
                     _tasks.AddLast(task);
                 }
 
@@ -82,8 +75,7 @@ namespace Core.Voxelworld
             }
         }
 
-        void Worker()
-        {
+        void Worker() {
             Action task = null;
             while (true) {
                 lock (_tasks) {

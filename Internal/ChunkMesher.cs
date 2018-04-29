@@ -1,24 +1,18 @@
-﻿using Cube;
-using UnityEngine;
+﻿using UnityEngine;
 
+namespace Cube.Voxelworld {
+    public class ChunkMesher {
+        enum Side {
+            Top,
+            Bottom,
+            Center,
+            Left,
+            Right,
+            Front,
+            Back
+        }
 
-namespace Core.Voxelworld
-{
-    public enum Side
-    {
-        Top,
-        Bottom,
-        Center,
-        Left,
-        Right,
-        Front,
-        Back
-    }
-
-    public class ChunkMesher
-    {
-        public static unsafe ChunkMesherResult Generate(IntVector3 position, ChunkVoxelData voxelData)
-        {
+        public static unsafe ChunkMesherResult Generate(IntVector3 position, ChunkVoxelData voxelData) {
             var result = new ChunkMesherResult();
 
             for (bool backFace = true, b = false; b != backFace; backFace = backFace && b, b = !b) {
@@ -28,22 +22,21 @@ namespace Core.Voxelworld
                     int v = (dimension + 2) % 3;
                     var x = new int[3];
                     var q = new int[3];
-                    var mask = new VoxelType[WorldManager.chunkSize * WorldManager.chunkSize];
+                    var mask = new VoxelType[VoxelworldSystem.chunkSize * VoxelworldSystem.chunkSize];
 
                     q[dimension] = 1;
 
-                    for (x[dimension] = -1; x[dimension] < WorldManager.chunkSize;) {
+                    for (x[dimension] = -1; x[dimension] < VoxelworldSystem.chunkSize;) {
                         // Compute the mask
                         int n = 0;
-                        for (x[v] = 0; x[v] < WorldManager.chunkSize; ++x[v]) {
-                            for (x[u] = 0; x[u] < WorldManager.chunkSize; ++x[u]) {
+                        for (x[v] = 0; x[v] < VoxelworldSystem.chunkSize; ++x[v]) {
+                            for (x[u] = 0; x[u] < VoxelworldSystem.chunkSize; ++x[u]) {
                                 VoxelType v1 = x[dimension] >= 0 ? voxelData.Get(x[0], x[1], x[2]).type : VoxelType.None;
-                                VoxelType v2 = (x[dimension] < WorldManager.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : VoxelType.None;
+                                VoxelType v2 = (x[dimension] < VoxelworldSystem.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : VoxelType.None;
 
                                 if (v1 == v2) {
                                     mask[n++] = VoxelType.None;
-                                }
-                                else {
+                                } else {
                                     mask[n++] = backFace ? v2 : v1;
                                 }
                             }
@@ -54,8 +47,8 @@ namespace Core.Voxelworld
 
                         // Generate mesh for mask using lexicographic ordering
                         n = 0;
-                        for (j = 0; j < WorldManager.chunkSize; ++j) {
-                            for (i = 0; i < WorldManager.chunkSize;) {
+                        for (j = 0; j < VoxelworldSystem.chunkSize; ++j) {
+                            for (i = 0; i < VoxelworldSystem.chunkSize;) {
                                 var maskVoxelType = mask[n];
                                 if (VoxelTypes.IsTransparent(maskVoxelType)) {
                                     ++i;
@@ -65,14 +58,14 @@ namespace Core.Voxelworld
 
                                 if (VoxelTypes.IsMergable(maskVoxelType)) {
                                     // Compute width
-                                    for (w = 1; i + w < WorldManager.chunkSize && mask[n + w] == maskVoxelType; ++w)
+                                    for (w = 1; i + w < VoxelworldSystem.chunkSize && mask[n + w] == maskVoxelType; ++w)
                                         ;
 
                                     // Compute height (this is slightly awkward)
                                     var done = false;
-                                    for (h = 1; j + h < WorldManager.chunkSize; ++h) {
+                                    for (h = 1; j + h < VoxelworldSystem.chunkSize; ++h) {
                                         for (k = 0; k < w; ++k) {
-                                            if (mask[n + k + h * WorldManager.chunkSize] != maskVoxelType) {
+                                            if (mask[n + k + h * VoxelworldSystem.chunkSize] != maskVoxelType) {
                                                 done = true;
                                                 break;
                                             }
@@ -80,8 +73,7 @@ namespace Core.Voxelworld
                                         if (done)
                                             break;
                                     }
-                                }
-                                else {
+                                } else {
                                     w = 1;
                                     h = 1;
                                 }
@@ -109,8 +101,7 @@ namespace Core.Voxelworld
                                         new Vector3(x[0], x[1], x[2]),
                                         normal,
                                         maskVoxelType);
-                                }
-                                else {
+                                } else {
                                     switch (dimension) {
                                         case 0: normal = Vector3.right; break;
                                         case 1: normal = Vector3.down; break;
@@ -129,7 +120,7 @@ namespace Core.Voxelworld
                                 // Zero-out mask
                                 for (l = 0; l < h; ++l) {
                                     for (k = 0; k < w; ++k) {
-                                        mask[n + k + l * WorldManager.chunkSize] = VoxelType.None;
+                                        mask[n + k + l * VoxelworldSystem.chunkSize] = VoxelType.None;
                                     }
                                 }
 

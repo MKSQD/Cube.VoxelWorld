@@ -1,0 +1,8 @@
+{
+    "name": "Cube.Voxelworld",
+    "references": [
+        "Cube.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
