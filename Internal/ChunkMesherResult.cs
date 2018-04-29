@@ -1,17 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Core.Voxelworld
-{
-    public class ChunkMesherResult
-    {
+namespace Cube.Voxelworld {
+    public class ChunkMesherResult {
         public List<Vector3> vertices = new List<Vector3>();
         public List<int> indices = new List<int>();
         public List<Vector2> uvs = new List<Vector2>();
         public List<Vector3> normals = new List<Vector3>();
 
-        public void BuildTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 normal, VoxelType voxelType)
-        {
+        public void BuildTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 normal, VoxelType voxelType) {
             int baseIndice = vertices.Count;
 
             vertices.Add(v1);
