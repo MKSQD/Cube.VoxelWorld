@@ -10,8 +10,13 @@ namespace Cube.Voxelworld {
             public ChunkMesherResult mesherResult;
         }
 
+        VoxelTypeManager _voxelTypeManager;
         ThreadPool _threadPool = new ThreadPool();
-        
+
+        public ChunkProvider(VoxelTypeManager voxelTypeManager) {
+            _voxelTypeManager = voxelTypeManager;
+        }
+
         public Request Load(IntVector3 chunkPosition, int priority) {
             var request = new Request {
                 position = chunkPosition
@@ -69,7 +74,7 @@ namespace Cube.Voxelworld {
         void GenerateInBackground(IntVector3 chunkPosition, Request request) {
             try {
                 if (request.chunk == null) {
-                    var voxelData = ChunkGenerator.Generate(chunkPosition);
+                    var voxelData = ChunkGenerator.Generate(chunkPosition, _voxelTypeManager);
                     request.chunk = new Chunk(voxelData);
                 }
 

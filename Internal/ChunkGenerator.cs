@@ -1,9 +1,8 @@
-﻿using Cube;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Cube.Voxelworld {
     public static class ChunkGenerator {
-        public static ChunkVoxelData Generate(IntVector3 position) {
+        public static ChunkVoxelData Generate(IntVector3 position, VoxelTypeManager voxelTypeManager) {
             var voxelData = new ChunkVoxelData();
 
             // Generate
@@ -14,8 +13,8 @@ namespace Cube.Voxelworld {
                 for (int y = 0; y < VoxelworldSystem.chunkSize; ++y) {
                     for (int x = 0; x < VoxelworldSystem.chunkSize; ++x) {
                         var density = Density(worldPosition.x + x, worldPosition.y + y, worldPosition.z + z);
-                        voxel.type = density > 0.5f ? Type(worldPosition.x + x, worldPosition.y + y, worldPosition.z + z) : VoxelType.None;
-                        
+                        voxel.type = density > 0.5f ? Type(voxelTypeManager, worldPosition.x + x, worldPosition.y + y, worldPosition.z + z) : (byte)0;
+
                         voxelData.Set(x, y, z, voxel);
                     }
                 }
@@ -31,15 +30,16 @@ namespace Cube.Voxelworld {
             return density;
         }
 
-        static VoxelType Type(float x, float y, float z) {
-            if (y < 10) {
-                if (SimplexNoise.Noise.Generate(x * 0.01f, y * 0.01f, z * 0.02f) < 0.5f)
-                    return VoxelType.Dirt;
+        static byte Type(VoxelTypeManager voxelTypeManager, float x, float y, float z) {
+            for (byte i = 2; i < voxelTypeManager.voxelTypes.Count; ++i) {
+                var voxelType = voxelTypeManager.voxelTypes[i];
+                if (!voxelType.generateInWorld)
+                    continue;
 
-                if (SimplexNoise.Noise.Generate(x * 0.08f, y * 0.08f, z * 0.08f) > 0.2f)
-                    return VoxelType.Iron;
+                if (SimplexNoise.Noise.Generate(i * 100 + x * 0.03f, y * 0.01f, i * 300 + z * 0.02f) < 0.5f)
+                    return i;
             }
-            return VoxelType.Concrete;
+            return 1;
         }
     }
 }
