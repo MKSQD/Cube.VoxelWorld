@@ -13,8 +13,9 @@ namespace Cube.Voxelworld {
         public int chunkMaxLoaded = 100;
 
         public List<VoxelworldViewer> viewers = new List<VoxelworldViewer>();
+        public VoxelTypeManager voxelTypeManager = new VoxelTypeManager();
 
-        ChunkProvider _chunkProvider = new ChunkProvider();
+        ChunkProvider _chunkProvider;
 
         Dictionary<IntVector3, Chunk> _chunks = new Dictionary<IntVector3, Chunk>();
         HashSet<IntVector3> _dirtyChunks = new HashSet<IntVector3>();
@@ -22,6 +23,8 @@ namespace Cube.Voxelworld {
         Dictionary<IntVector3, float> _positionAgeMap = new Dictionary<IntVector3, float>();
 
         void Awake() {
+            _chunkProvider = new ChunkProvider(voxelTypeManager);
+
             gameObject.SetSystem(this);
         }
 

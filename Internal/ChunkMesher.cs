@@ -22,7 +22,7 @@ namespace Cube.Voxelworld {
                     int v = (dimension + 2) % 3;
                     var x = new int[3];
                     var q = new int[3];
-                    var mask = new VoxelType[VoxelworldSystem.chunkSize * VoxelworldSystem.chunkSize];
+                    var mask = new byte[VoxelworldSystem.chunkSize * VoxelworldSystem.chunkSize];
 
                     q[dimension] = 1;
 
@@ -31,18 +31,18 @@ namespace Cube.Voxelworld {
                         int n = 0;
                         for (x[v] = 0; x[v] < VoxelworldSystem.chunkSize; ++x[v]) {
                             for (x[u] = 0; x[u] < VoxelworldSystem.chunkSize; ++x[u]) {
-                                var v1 = x[dimension] >= 0 ? voxelData.Get(x[0], x[1], x[2]).type : VoxelType.None;
-                                var v2 = (x[dimension] < VoxelworldSystem.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : VoxelType.None;
+                                byte voxelType1 = x[dimension] >= 0 ? voxelData.Get(x[0], x[1], x[2]).type : (byte)0;
+                                byte voxelType2 = (x[dimension] < VoxelworldSystem.chunkSize - 1) ? voxelData.Get(x[0] + q[0], x[1] + q[1], x[2] + q[2]).type : (byte)0;
 
-                                var faceNotVisible = v1 != VoxelType.None && v2 != VoxelType.None;
-                                if (v1 == v2 || faceNotVisible) {
-                                    mask[n++] = VoxelType.None;
+                                var faceNotVisible = voxelType1 != 0 && voxelType2 != 0;
+                                if (voxelType1 == voxelType2 || faceNotVisible) {
+                                    mask[n++] = 0;
                                 } else {
-                                    mask[n++] = backFace ? v2 : v1;
+                                    mask[n++] = backFace ? voxelType2 : voxelType1;
                                 }
                             }
                         }
-                        
+
                         ++x[dimension];
 
                         // Generate mesh for mask using lexicographic ordering
@@ -50,7 +50,7 @@ namespace Cube.Voxelworld {
                         for (j = 0; j < VoxelworldSystem.chunkSize; ++j) {
                             for (i = 0; i < VoxelworldSystem.chunkSize;) {
                                 var maskVoxelType = mask[n];
-                                if (maskVoxelType == VoxelType.None) {
+                                if (maskVoxelType == 0) {
                                     ++i;
                                     ++n;
                                     continue;
@@ -121,7 +121,7 @@ namespace Cube.Voxelworld {
                                 // Zero-out mask
                                 for (l = 0; l < h; ++l) {
                                     for (k = 0; k < w; ++k) {
-                                        mask[n + k + l * VoxelworldSystem.chunkSize] = VoxelType.None;
+                                        mask[n + k + l * VoxelworldSystem.chunkSize] = 0;
                                     }
                                 }
 

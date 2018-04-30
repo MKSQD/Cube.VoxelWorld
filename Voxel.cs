@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Cube.Voxelworld {
     public struct Voxel {
-        public VoxelType type;
+        public byte type;
 
-        public static Voxel empty = new Voxel(VoxelType.None);
+        public static Voxel empty = new Voxel();
 
-        public Voxel(VoxelType type) {
+        public Voxel(byte type) {
             this.type = type;
         }
     }
