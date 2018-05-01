@@ -14,10 +14,12 @@ namespace Cube.Voxelworld {
     public class VoxelTypeManager {
         public List<VoxelTypeDescription> voxelTypes = new List<VoxelTypeDescription>();
         
-        public void AddVoxelType(VoxelTypeDescription description) {
+        public byte AddVoxelType(VoxelTypeDescription description) {
             voxelTypes.Add(description);
-
+            
             Debug.Log("Added VoxelType '" + description.name + "'");
+            
+            return (byte)voxelTypes.Count;
         }
     }
 }
