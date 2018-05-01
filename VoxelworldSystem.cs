@@ -17,23 +17,12 @@ namespace Cube.Voxelworld {
 
         ChunkProvider _chunkProvider;
 
+        List<IVoxelworldListener> _listeners = new List<IVoxelworldListener>();
+
         Dictionary<IntVector3, Chunk> _chunks = new Dictionary<IntVector3, Chunk>();
         HashSet<IntVector3> _dirtyChunks = new HashSet<IntVector3>();
         Dictionary<IntVector3, ChunkProvider.Request> _loadingChunks = new Dictionary<IntVector3, ChunkProvider.Request>();
         Dictionary<IntVector3, float> _positionAgeMap = new Dictionary<IntVector3, float>();
-
-        void Awake() {
-            _chunkProvider = new ChunkProvider(voxelTypeManager);
-
-            gameObject.SetSystem(this);
-        }
-
-        void Update() {
-            RebuildDirtyChunks();
-            UpdatePendingChunks();
-            LoadNewChunks();
-            //UnloadOldChunks();
-        }
 
         public Voxel GetVoxelAtWorldPosition(Vector3 worldPosition) {
             var chunkPosition = WorldToChunkPosition(worldPosition);
@@ -45,7 +34,7 @@ namespace Cube.Voxelworld {
             var blockPosition = WorldToBlockLocalPosition(worldPosition);
             return chunk.voxelData.Get(blockPosition.x, blockPosition.y, blockPosition.z);
         }
-        
+
         /// <returns>The previous Voxel</returns>
         public Voxel SetVoxelAtWorldPosition(Vector3 worldPosition, Voxel voxel) {
             var chunkPosition = WorldToChunkPosition(worldPosition);
@@ -56,31 +45,18 @@ namespace Cube.Voxelworld {
 
             var blockLocalPosition = WorldToBlockLocalPosition(worldPosition);
             var prevVoxel = chunk.voxelData.Get(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z);
+            if (prevVoxel.Equals(voxel))
+                return prevVoxel;
+
             chunk.voxelData.Set(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z, voxel);
 
             TouchChunk(chunkPosition, blockLocalPosition);
 
+            foreach (var listener in _listeners) {
+                listener.ChangedVoxel(voxel, chunk, blockLocalPosition);
+            }
+
             return prevVoxel;
-        }
-
-        void TouchChunk(IntVector3 chunkPosition, IntVector3 blockLocalPosition) {
-            _dirtyChunks.Add(chunkPosition);
-
-            if (blockLocalPosition.x == 0) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(-1, 0, 0));
-            } else if (blockLocalPosition.x == chunkSize - 1) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(1, 0, 0));
-            }
-            if (blockLocalPosition.y == 0) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(0, -1, 0));
-            } else if (blockLocalPosition.y == chunkSize - 1) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 1, 0));
-            }
-            if (blockLocalPosition.z == 0) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 0, -1));
-            } else if (blockLocalPosition.z == chunkSize - 1) {
-                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 0, 1));
-            }
         }
 
         static public IntVector3 WorldToChunkPosition(Vector3 worldPositon) {
@@ -104,6 +80,43 @@ namespace Cube.Voxelworld {
             return new IntVector3(blockPosition.x - chunkPosition.x * chunkSize,
                 blockPosition.y - chunkPosition.y * chunkSize,
                 blockPosition.z - chunkPosition.z * chunkSize);
+        }
+
+        public void AddListener(IVoxelworldListener listener) {
+            _listeners.Add(listener);
+        }
+
+        void Awake() {
+            _chunkProvider = new ChunkProvider(voxelTypeManager);
+
+            gameObject.SetSystem(this);
+        }
+
+        void Update() {
+            RebuildDirtyChunks();
+            UpdatePendingChunks();
+            LoadNewChunks();
+            //UnloadOldChunks();
+        }
+
+        void TouchChunk(IntVector3 chunkPosition, IntVector3 blockLocalPosition) {
+            _dirtyChunks.Add(chunkPosition);
+
+            if (blockLocalPosition.x == 0) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(-1, 0, 0));
+            } else if (blockLocalPosition.x == chunkSize - 1) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(1, 0, 0));
+            }
+            if (blockLocalPosition.y == 0) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(0, -1, 0));
+            } else if (blockLocalPosition.y == chunkSize - 1) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 1, 0));
+            }
+            if (blockLocalPosition.z == 0) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 0, -1));
+            } else if (blockLocalPosition.z == chunkSize - 1) {
+                _dirtyChunks.Add(chunkPosition + new IntVector3(0, 0, 1));
+            }
         }
 
         void RebuildDirtyChunks() {
