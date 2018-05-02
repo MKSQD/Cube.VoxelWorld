@@ -14,24 +14,12 @@ namespace Cube.Voxelworld {
             _data = new Voxel[dataSize];
         }
 
-        public unsafe Voxel Get(int x, int y, int z) {
-            try {
-                return _data[x + VoxelworldSystem.chunkSize * (y + VoxelworldSystem.chunkSize * z)];
-            }
-            catch (System.IndexOutOfRangeException) {
-                Debug.LogError("IndexOutOfRangeException: (" + x + "," + y + "," + z + ")");
-                throw;
-            }
+        public Voxel Get(int x, int y, int z) {
+            return _data[x + VoxelworldSystem.chunkSize * (y + VoxelworldSystem.chunkSize * z)];
         }
 
-        public unsafe void Set(int x, int y, int z, Voxel voxel) {
-            try {
-                _data[x + VoxelworldSystem.chunkSize * (y + VoxelworldSystem.chunkSize * z)] = voxel;
-            }
-            catch (System.IndexOutOfRangeException) {
-                Debug.LogError("IndexOutOfRangeException: (" + x + "," + y + "," + z + ")");
-                throw;
-            }
+        public void Set(int x, int y, int z, Voxel voxel) {
+            _data[x + VoxelworldSystem.chunkSize * (y + VoxelworldSystem.chunkSize * z)] = voxel;
         }
     }
 

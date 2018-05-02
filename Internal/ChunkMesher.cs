@@ -12,7 +12,7 @@ namespace Cube.Voxelworld {
             Back
         }
 
-        public static unsafe ChunkMesherResult Generate(IntVector3 position, ChunkVoxelData voxelData) {
+        public static ChunkMesherResult Generate(IntVector3 position, ChunkVoxelData voxelData) {
             var result = new ChunkMesherResult();
 
             for (bool backFace = true, b = false; b != backFace; backFace = backFace && b, b = !b) {
